@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import Comment from './Comment'
 import { themeAttr } from '../utils/Theme'
+import axios from '../utils/Axios'
+import { CommentType } from '../types/Comment'
+import { useAppSelector } from '../types/hooks'
 const Container = tw.div`
 
 `
@@ -24,23 +27,38 @@ const Input = styled.input`
   color: ${themeAttr('text')};
 `
 
-export default function Comments() {
+export default function Comments({ videoId }: { videoId: string }) {
+  const [comments, setComments] = useState([])
+
+  const { user } = useAppSelector(state => state.user)
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const res = await axios.get(`/comments/${videoId}`)
+        setComments(res.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    fetchComments()
+  }, [videoId])
+
   return (
     <Container>
       <NewComment>
-        <Avatar src="https://th.bing.com/th/id/OIG.WMtTCbVcZ7AzNjn1tVwW?pid=ImgGn" />
+        <Avatar
+          src={
+            user?.img ||
+            'https://th.bing.com/th/id/OIG.WMtTCbVcZ7AzNjn1tVwW?pid=ImgGn'
+          }
+        />
         <Input placeholder="Share your idea here..." />
       </NewComment>
-      <Comment></Comment>
-      <Comment></Comment>
-      <Comment></Comment>
-      <Comment></Comment>
-      <Comment></Comment>
-      <Comment></Comment>
-      <Comment></Comment>
-      <Comment></Comment>
-      <Comment></Comment>
-      <Comment></Comment>
+      {comments.map((comment: CommentType) => (
+        <Comment key={comment._id} comment={comment} />
+      ))}
     </Container>
   )
 }

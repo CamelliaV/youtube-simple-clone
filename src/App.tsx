@@ -11,6 +11,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Video from './pages/Video'
 import SignIn from './pages/SignIn'
+import Search from './pages/Search'
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 
 const Container = tw.div`
   flex
@@ -36,6 +38,7 @@ function App() {
   useEffect(() => {
     localStorage.setItem('darkMode', JSON.stringify(darkMode))
   }, [darkMode])
+  const [animationParent] = useAutoAnimate()
 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
@@ -44,10 +47,13 @@ function App() {
           <Menu darkMode={darkMode} setDarkMode={setDarkMode} />
           <Main>
             <Navbar />
-            <Wrapper>
+            <Wrapper ref={animationParent}>
               <Routes>
                 <Route path="/">
-                  <Route index element={<Home />} />
+                  <Route index element={<Home type="random" />} />
+                  <Route path="trends" element={<Home type="trend" />} />
+                  <Route path="subscriptions" element={<Home type="sub" />} />
+                  <Route path="search" element={<Search />} />
                   <Route path="signin" element={<SignIn />} />
                   <Route path="video">
                     <Route path=":id" element={<Video />} />

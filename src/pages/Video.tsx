@@ -1,13 +1,33 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import { themeAttr } from '../utils/Theme'
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined'
+import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 import ThumbDownOffAltOutlinedIcon from '@mui/icons-material/ThumbDownOffAltOutlined'
+import ThumbDownIcon from '@mui/icons-material/ThumbDown'
 import ReplyOutlinedIcon from '@mui/icons-material/ReplyOutlined'
 import AddTaskOutlinedIcon from '@mui/icons-material/AddTaskOutlined'
 import Comments from '../components/Comments'
 import Card from '../components/Card'
+import userSlice, { subscribe } from '../redux/userSlice'
+import { useAppDispatch, useAppSelector } from '../types/hooks'
+import { useLocation } from 'react-router-dom'
+import axios from '../utils/Axios'
+import { VideoType } from '../types/Video'
+import { UserType } from '../types/User'
+import {
+  fetchFailure,
+  fetchStart,
+  fetchSuccess,
+  like,
+  dislike
+} from '../redux/videoSlice'
+import TimeAgo from 'javascript-time-ago'
+import Recommendation from '../components/Recommendation'
+
+const timeAgo = new TimeAgo('en-US')
+
 const Container = tw.div`
   flex
   gap-6
@@ -46,10 +66,6 @@ const Button = tw.div`
   cursor-pointer
 `
 
-const Recommendation = tw.div`
-  flex-[2]
-`
-
 const Channel = tw.div`
   flex
   justify-between
@@ -77,7 +93,8 @@ const ChannelCounter = styled.span`
 const Description = tw.p`
   text-[14px]
 `
-const Subscribe = tw.button`
+const Subscribe = styled.button`
+  ${tw`
   bg-[#cc1a00]
   font-medium
   cursor-pointer
@@ -87,31 +104,109 @@ const Subscribe = tw.button`
   border-none
   rounded-[3px]
   text-[white]
+  `};
+  background-color: ${({ theme }) => (theme === 'yes' ? '#373737' : '')};
+`
+
+const VideoFrame = tw.video`
+  w-full
+  max-w-[720px]
+  object-cover
 `
 
 export default function Video() {
+  const { user } = useAppSelector(state => state.user)
+  const { video } = useAppSelector(state => state.video)
+  const dispatch = useAppDispatch()
+
+  const path = useLocation().pathname.split('/')[2]
+
+  const [channel, setChannel] = useState<UserType>()
+
+  const handleLike = async () => {
+    try {
+      await axios.put(`/users/like/${video?._id}`)
+      dispatch(like(user?._id))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleDislike = async () => {
+    try {
+      await axios.put(`/users/like/${video?._id}`)
+      dispatch(dislike(user?._id))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleSubscribe = async () => {
+    try {
+      const action = user?.subscribedUsers.includes(channel?._id!)
+        ? 'unsub'
+        : 'sub'
+      await axios.put(`/users/${action}/${channel?._id}`)
+      dispatch(subscribe(channel?._id))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch(fetchStart())
+      try {
+        const video = await axios.get<VideoType>(`/videos/find/${path}`)
+        const channel = await axios.get<UserType>(
+          `/users/find/${video.data.userId}`
+        )
+
+        dispatch(fetchSuccess(video.data))
+        setChannel(channel.data)
+      } catch (error) {
+        dispatch(fetchFailure())
+      }
+    }
+    fetchData()
+  }, [path, dispatch])
+
   return (
     <Container>
       <Content>
         <VideoWrapper>
-          <iframe
+          <VideoFrame src={video?.videoUrl} controls />
+          {/* <iframe
             src="https://www.veed.io/embed/3003b122-6534-4c78-97ca-7b99970ae8ce"
             width="100%"
             height="720"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             title="Lofi Video Test"
             allowFullScreen
-          ></iframe>
+          ></iframe> */}
         </VideoWrapper>
-        <Title>Lofi Test Video</Title>
+        <Title>{video?.title}</Title>
         <Details>
-          <Info>660,908 views • 1 day ago</Info>
+          <Info>
+            {video?.views} views •{' '}
+            {timeAgo.format(new Date(video?.createdAt || new Date()))}
+          </Info>
           <Buttons>
-            <Button>
-              <ThumbUpOutlinedIcon /> 123
+            <Button onClick={handleLike}>
+              {video?.likes.includes(user!._id) ? (
+                <ThumbUpIcon />
+              ) : (
+                <ThumbUpOutlinedIcon />
+              )}
+              {video?.likes?.length}
             </Button>
-            <Button>
-              <ThumbDownOffAltOutlinedIcon /> Dislike
+            <Button onClick={handleDislike}>
+              {video?.dislikes.includes(user!._id) ? (
+                <ThumbDownIcon />
+              ) : (
+                <ThumbDownOffAltOutlinedIcon />
+              )}
+              Dislike
             </Button>
             <Button>
               <ReplyOutlinedIcon /> Share
@@ -124,24 +219,35 @@ export default function Video() {
         <Hr />
         <Channel>
           <ChannelInfo>
-            <Image src="https://th.bing.com/th/id/OIG.n9uMDUv50OpeIkdd_8u0?pid=ImgGn" />
+            <Image
+              src={
+                channel?.img ||
+                'https://th.bing.com/th/id/OIG.n9uMDUv50OpeIkdd_8u0?pid=ImgGn'
+              }
+            />
             <ChannelDetail>
-              <ChannelName>Lofi</ChannelName>
-              <ChannelCounter>200K subscribers</ChannelCounter>
-              <Description>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe
-                culpa soluta atque impedit, sequi ea iure placeat necessitatibus
-                labore vero ex recusandae autem, magnam exercitationem pariatur
-                facere! Quod, veniam culpa?
-              </Description>
+              <ChannelName>{channel?.name}</ChannelName>
+              <ChannelCounter>
+                {channel?.subscribers} subscribers
+              </ChannelCounter>
+              <Description>{video?.desc}</Description>
             </ChannelDetail>
           </ChannelInfo>
-          <Subscribe>SUBSCRIBE</Subscribe>
+          {user?.subscribedUsers.includes(channel?._id || '') ? (
+            <Subscribe onClick={handleSubscribe} theme="yes">
+              Subscribed
+            </Subscribe>
+          ) : (
+            <Subscribe onClick={handleSubscribe} theme="no">
+              Subscribe
+            </Subscribe>
+          )}
         </Channel>
         <Hr />
-        <Comments></Comments>
+        <Comments videoId={video?._id!} />
       </Content>
-      <Recommendation>
+      <Recommendation tags={video?.tags || []} />
+      {/* <Recommendation>
         <Card type="sm" />
         <Card type="sm" />
         <Card type="sm" />
@@ -155,7 +261,7 @@ export default function Video() {
         <Card type="sm" />
         <Card type="sm" />
         <Card type="sm" />
-      </Recommendation>
+      </Recommendation> */}
     </Container>
   )
 }

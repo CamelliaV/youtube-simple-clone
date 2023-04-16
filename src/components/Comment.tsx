@@ -1,7 +1,15 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import { themeAttr } from '../utils/Theme'
+import { CommentType } from '../types/Comment'
+import TimeAgo from 'javascript-time-ago'
+import { useAppSelector } from '../types/hooks'
+import axios from '../utils/Axios'
+import { UserType } from '../types/User'
+
+const timeAgo = new TimeAgo('en-US')
+
 const Container = tw.div`
   flex
   gap-3
@@ -21,7 +29,7 @@ const Name = tw.span`
   text-[14px]
   font-medium
 `
-const Date = styled.span`
+const DateTag = styled.span`
   ${tw`font-normal text-[12px] ml-2`};
   color: ${themeAttr('textSoft')};
 `
@@ -29,20 +37,37 @@ const Text = tw.span`
   text-[14px]
 `
 
-export default function Comment() {
+export default function Comment({ comment }: { comment: CommentType }) {
+  const [commenter, setCommenter] = useState<UserType>()
+
+  useEffect(() => {
+    const fetchCommenter = async () => {
+      try {
+        const res = await axios.get(`/users/find/${comment.userId}`)
+        setCommenter(res.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchCommenter()
+  }, [comment.userId])
+
   return (
     <Container>
-      <Avatar src="https://th.bing.com/th/id/OIG..r71eUK6hhMQiM6pVaro?pid=ImgGn"></Avatar>
+      <Avatar
+        src={
+          commenter?.img ||
+          'https://th.bing.com/th/id/OIG..r71eUK6hhMQiM6pVaro?pid=ImgGn'
+        }
+      />
       <Details>
         <Name>
-          Alpha<Date>1 day ago</Date>
+          {commenter?.name}
+          <DateTag>
+            {timeAgo.format(new Date(comment?.createdAt || new Date()))}
+          </DateTag>
         </Name>
-        <Text>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis ex
-          blanditiis vel velit ea debitis consectetur odio porro cumque totam
-          fugit beatae eum, at exercitationem voluptatem obcaecati maiores
-          laboriosam nihil?
-        </Text>
+        <Text>{comment.desc}</Text>
       </Details>
     </Container>
   )

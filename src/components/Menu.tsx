@@ -20,6 +20,7 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import styled from 'styled-components'
 import { themeAttr } from '../utils/Theme'
 import { Link } from 'react-router-dom'
+import { useAppSelector } from '../types/hooks'
 // bg-black
 
 const Container = styled.div`
@@ -88,6 +89,8 @@ export default function Menu({
   darkMode: boolean
   setDarkMode: Dispatch<SetStateAction<boolean>>
 }) {
+  const { user } = useAppSelector(state => state.user)
+
   return (
     <Container>
       <Wrapper>
@@ -97,18 +100,24 @@ export default function Menu({
             VTube
           </Logo>
         </Link>
-        <Item>
-          <HomeIcon></HomeIcon>
-          Home
-        </Item>
-        <Item>
-          <ExploreOutlinedIcon />
-          Explore
-        </Item>
-        <Item>
-          <SubscriptionsOutlinedIcon />
-          Subscriptions
-        </Item>
+        <Link to="/">
+          <Item>
+            <HomeIcon></HomeIcon>
+            Home
+          </Item>
+        </Link>
+        <Link to="/trends">
+          <Item>
+            <ExploreOutlinedIcon />
+            Explore
+          </Item>
+        </Link>
+        <Link to="/subscriptions">
+          <Item>
+            <SubscriptionsOutlinedIcon />
+            Subscriptions
+          </Item>
+        </Link>
         <Hr />
         <Item>
           <VideoLibraryOutlinedIcon />
@@ -119,16 +128,18 @@ export default function Menu({
           History
         </Item>
         <Hr />
-
-        <Login>
-          Sign in to like videos, comment, and subscribe.
-          {/* Note that: you should not wrap a <button> inside a <a> (or vice versa)*/}
-          <Button to="/signin">
-            <AccountCircleOutlinedIcon /> SIGN IN
-          </Button>
-        </Login>
-
-        <Hr />
+        {!user && (
+          <>
+            <Login>
+              Sign in to like videos, comment, and subscribe.
+              {/* Note that: you should not wrap a <button> inside a <a> (or vice versa)*/}
+              <Button to="/signin">
+                <AccountCircleOutlinedIcon /> SIGN IN
+              </Button>
+            </Login>
+            <Hr />
+          </>
+        )}
         <Title>BEST OF VTUBE</Title>
         <Item>
           <LibraryMusicOutlinedIcon />

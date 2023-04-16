@@ -1,7 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import { themeAttr } from '../utils/Theme'
+import axios from '../utils/Axios'
+import { useDispatch } from 'react-redux'
+import { loginFailure, loginStart, loginSuccess } from '../redux/userSlice'
+import { useAppDispatch } from '../types/hooks'
+import { auth, provider } from '../firebase'
+import { signInWithPopup } from 'firebase/auth'
 
 const Container = styled.div`
   ${tw`flex flex-col items-center justify-center h-[calc(100vh - 3.5rem)]`};
@@ -39,19 +45,98 @@ const Links = tw.div`
 const Link = styled.span``
 
 export default function SignIn() {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const dispatch = useAppDispatch()
+
+  const handleLogin = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    dispatch(loginStart())
+    try {
+      const res = await axios.post('/auth/signin', {
+        name,
+        password
+      })
+      dispatch(loginSuccess(res.data))
+      // console.log(res.data)
+    } catch (error) {
+      // console.log(error)
+      dispatch(loginFailure())
+    }
+  }
+
+  const signInWithGoogle = () => {
+    dispatch(loginStart())
+    signInWithPopup(auth, provider)
+      .then(async result => {
+        return await axios.post('/auth/google', {
+          name: result.user.displayName,
+          email: result.user.email,
+          img: result.user.photoURL
+        })
+      })
+      .then(res => dispatch(loginSuccess(res.data)))
+      .catch(err => dispatch(loginFailure()))
+  }
+
   return (
     <Container>
       <Wrapper>
         <Title>Sign in</Title>
         <SubTitle>to continue to Vtube</SubTitle>
-        <Input type="text" placeholder="username" />
-        <Input type="password" placeholder="password" />
-        <Button>Sign in</Button>
+        <Input
+          id="signin-username"
+          type="text"
+          placeholder="username"
+          onChange={e => {
+            setName(e.target.value)
+          }}
+        />
+        <Input
+          id="signin-password"
+          type="password"
+          placeholder="password"
+          onChange={e => {
+            setPassword(e.target.value)
+          }}
+        />
+        <Button onClick={handleLogin}>Sign in</Button>
         <Title>Or</Title>
-        <Input type="text" placeholder="username" />
-        <Input type="text" placeholder="email" />
-        <Input type="password" placeholder="password" />
-        <Button>Sign Up</Button>
+        <Button onClick={signInWithGoogle}>Signin with Google</Button>
+        <Input
+          type="text"
+          placeholder="username"
+          onChange={e => {
+            setName(e.target.value)
+          }}
+        />
+        <Input
+          type="text"
+          placeholder="email"
+          onChange={e => {
+            setEmail(e.target.value)
+          }}
+        />
+        <Input
+          type="password"
+          placeholder="password"
+          onChange={e => {
+            setPassword(e.target.value)
+          }}
+        />
+        <Button
+          onClick={e => {
+            if (
+              document.getElementById('signin-username')?.textContent ||
+              document.getElementById('signin-password')?.textContent
+            )
+              return
+          }}
+        >
+          Sign Up
+        </Button>
       </Wrapper>
       <More>
         <span>English(USA)</span>
