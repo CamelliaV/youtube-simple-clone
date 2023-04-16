@@ -1,6 +1,6 @@
 # youtube-simple-clone-front-end
 
-Check backend in another branch
+Check backend in master branch
 
 ### Adding:
 
