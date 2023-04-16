@@ -36,7 +36,7 @@ export const signin: RequestHandler = async (
     const user = await User.findOne({ name: req.body.name })
     if (!user) return next(createError(404, 'User not found!'))
 
-    const isCorrect = await bcrypt.compare(req.body.password, user.password)
+    const isCorrect = await bcrypt.compare(req.body.password, user.password!)
 
     if (!isCorrect) return next(createError(400, 'Wrong credentials!'))
     const token = jwt.sign({ id: user._id }, process.env.JWT!)
@@ -58,4 +58,23 @@ export const google: RequestHandler = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {}
+) => {
+  try {
+    let user = await User.findOne({ email: req.body.email })
+    if (!user) {
+      const newUser = new User({ ...req.body, fromGoogle: true })
+      user = await newUser.save()
+    }
+    const token = jwt.sign({ id: user._id }, process.env.JWT!)
+
+    res
+      .cookie('access_token', token, {
+        httpOnly: true
+      })
+      .status(200)
+      /// @ts-ignore
+      .json(user._doc)
+  } catch (error) {
+    next(error)
+  }
+}
