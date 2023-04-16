@@ -193,7 +193,7 @@ export default function Video() {
           </Info>
           <Buttons>
             <Button onClick={handleLike}>
-              {video?.likes.includes(user!._id) ? (
+              {user && video?.likes.includes(user!._id) ? (
                 <ThumbUpIcon />
               ) : (
                 <ThumbUpOutlinedIcon />
@@ -201,7 +201,7 @@ export default function Video() {
               {video?.likes?.length}
             </Button>
             <Button onClick={handleDislike}>
-              {video?.dislikes.includes(user!._id) ? (
+              {user && video?.dislikes.includes(user!._id) ? (
                 <ThumbDownIcon />
               ) : (
                 <ThumbDownOffAltOutlinedIcon />

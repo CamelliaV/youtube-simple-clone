@@ -1,7 +1,7 @@
 // vite.config.ts
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-const mode: 'dev' | 'prod' = 'prod'
+const mode: 'dev' | 'prod' = 'dev'
 // https://vitejs.dev/config/
 export default defineConfig({
   base: mode === 'dev' ? '' : '/youtube-simple-clone/',
@@ -25,7 +25,7 @@ export default defineConfig({
     proxy: {
       '/api': {
         target:
-          mode === 'dev'
+          mode !== 'dev'
             ? 'http://localhost:3000/api'
             : 'http://youtube-simple-clone-production.up.railway.app/api',
         changeOrigin: true,
