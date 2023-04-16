@@ -45,3 +45,5 @@ app.listen(3000, () => {
   console.log('Server Started Successfully!')
   connect()
 })
+
+export default app
