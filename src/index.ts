@@ -7,8 +7,10 @@ import videoRoutes from './routes/videos'
 import commentRoutes from './routes/comments'
 import authRoutes from './routes/auth'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 dotenv.config()
 const app = express()
+app.use(cors())
 
 app.use(cookieParser())
 app.use(express.json())
