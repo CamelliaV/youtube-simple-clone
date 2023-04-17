@@ -47,7 +47,7 @@ export const signin: RequestHandler = async (
     res
       .cookie('access_token', token, {
         httpOnly: true,
-        domain: 'camelliav.github.io',
+        domain: 'github.io',
         secure: true,
         sameSite: 'none',
         maxAge: 86400000
