@@ -46,7 +46,11 @@ export const signin: RequestHandler = async (
     const { password, ...others } = user?._doc
     res
       .cookie('access_token', token, {
-        httpOnly: true
+        httpOnly: true,
+        domain: 'camelliav.github.io/',
+        secure: true,
+        sameSite: 'none',
+        maxAge: 86400000
       })
       .status(200)
       .json(others)
@@ -69,7 +73,11 @@ export const google: RequestHandler = async (
 
     res
       .cookie('access_token', token, {
-        httpOnly: true
+        httpOnly: true,
+        domain: 'camelliav.github.io/',
+        secure: true,
+        sameSite: 'none',
+        maxAge: 86400000
       })
       .status(200)
       /// @ts-ignore

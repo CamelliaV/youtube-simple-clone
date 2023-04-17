@@ -10,7 +10,12 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 dotenv.config()
 const app = express()
-app.use(cors())
+app.use(
+  cors({
+    origin: 'https://camelliav.github.io/youtube-simple-clone/',
+    credentials: true
+  })
+)
 
 app.use(cookieParser())
 app.use(express.json())
