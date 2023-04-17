@@ -47,7 +47,7 @@ export const signin: RequestHandler = async (
     res
       .cookie('access_token', token, {
         httpOnly: true,
-        domain: 'github.io',
+        domain: '*',
         secure: true,
         sameSite: 'none',
         maxAge: 86400000
@@ -74,7 +74,7 @@ export const google: RequestHandler = async (
     res
       .cookie('access_token', token, {
         httpOnly: true,
-        domain: 'github.io',
+        domain: '*',
         secure: true,
         sameSite: 'none',
         maxAge: 86400000
