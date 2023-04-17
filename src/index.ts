@@ -12,7 +12,7 @@ dotenv.config()
 const app = express()
 app.use(
   cors({
-    origin: 'https://camelliav.github.io/youtube-simple-clone/',
+    origin: 'https://camelliav.github.io/',
     credentials: true
   })
 )
