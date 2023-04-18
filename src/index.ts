@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import express from 'express'
+import express, { Request, Response, RequestHandler } from 'express'
 import { ErrorRequestHandler } from 'express'
 import dotenv from 'dotenv'
 import userRoutes from './routes/users'
@@ -8,6 +8,7 @@ import commentRoutes from './routes/comments'
 import authRoutes from './routes/auth'
 import cookieParser from 'cookie-parser'
 import path from 'path'
+import history from 'connect-history-api-fallback'
 dotenv.config()
 const app = express()
 
@@ -26,10 +27,9 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     success: false
   })
 }
-
-app.use('/',express.static(path.join(__dirname,"..",'public')));
+app.use(history())
 app.use(errorHandler)
-
+app.use('/', express.static(path.join(__dirname, '..', 'public')))
 const connect = () => {
   mongoose
     .connect(process.env.MONGO_DB!)
@@ -39,15 +39,16 @@ const connect = () => {
     .catch(err => console.log(err))
 }
 
-// app.get('/', (req, res) => {
-//   console.log('Hi')
-//   res.send('Hi')
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'))
+})
+
+// app.use('*',  (req: Request, res: Response) => {
+//   console.log('Invalid Route')
+//   res.status(404).send('Invalid Route!')
 // })
 
 app.listen(process.env.PORT || 3000, () => {
   console.log('Server Started Successfully!')
   connect()
 })
-
-
-
