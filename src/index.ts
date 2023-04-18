@@ -44,7 +44,7 @@ const connect = () => {
     })
     .catch(err => console.log(err))
 }
-app.use('/', connectHistoryApiFallback())
+// app.use('/', connectHistoryApiFallback())
 
 // app.get('/', (req, res) => {
 //   console.log('Hi')
