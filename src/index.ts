@@ -41,10 +41,10 @@ const connect = () => {
     .catch(err => console.log(err))
 }
 
-app.get('/', (req, res) => {
-  // res.sendFile('/index.html')
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'))
-})
+// app.get('/', (req, res) => {
+//   // res.sendFile('/index.html')
+//   // res.sendFile(path.join(__dirname, '..', 'public', 'index.html'))
+// })
 
 // app.use('*',  (req: Request, res: Response) => {
 //   console.log('Invalid Route')
