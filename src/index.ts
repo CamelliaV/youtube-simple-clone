@@ -31,7 +31,7 @@ app.use(history())
 app.use(errorHandler)
 // console.log(__dirname)
 app.use('/', express.static(path.join(__dirname, '..', 'public')))
-app.use('/', express.static(path.join(__dirname, '..', 'public', 'assets')))
+// app.use('/', express.static(path.join(__dirname, '..', 'public', 'assets')))
 const connect = () => {
   mongoose
     .connect(process.env.MONGO_DB!)
@@ -42,7 +42,7 @@ const connect = () => {
 }
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join('index.html'))
+  res.sendFile('/index.html')
 })
 
 // app.use('*',  (req: Request, res: Response) => {
