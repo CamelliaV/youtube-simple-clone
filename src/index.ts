@@ -30,7 +30,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 app.use(history())
 app.use(errorHandler)
 // console.log(__dirname)
-// app.use(express.static(path.join(__dirname, '..',  'static')))
+app.use('/', express.static(path.join(__dirname, '..', 'assets')))
 // app.use('/', express.static('public'))
 const connect = () => {
   mongoose
@@ -41,10 +41,9 @@ const connect = () => {
     .catch(err => console.log(err))
 }
 
-// app.get('/', (req, res) => {
-//   // res.sendFile('/index.html')
-//   // res.sendFile(path.join(__dirname, '..', 'public', 'index.html'))
-// })
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'index.html'))
+})
 
 // app.use('*',  (req: Request, res: Response) => {
 //   console.log('Invalid Route')
