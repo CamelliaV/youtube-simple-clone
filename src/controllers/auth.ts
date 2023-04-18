@@ -47,7 +47,6 @@ export const signin: RequestHandler = async (
     res
       .cookie('access_token', token, {
         httpOnly: true,
-        sameSite: 'none',
         maxAge: 86400000
       })
       .status(200)
@@ -72,7 +71,6 @@ export const google: RequestHandler = async (
     res
       .cookie('access_token', token, {
         httpOnly: true,
-        sameSite: 'none',
         maxAge: 86400000
       })
       .status(200)
