@@ -7,15 +7,9 @@ import videoRoutes from './routes/videos'
 import commentRoutes from './routes/comments'
 import authRoutes from './routes/auth'
 import cookieParser from 'cookie-parser'
-import cors from 'cors'
+import path from 'path'
 dotenv.config()
 const app = express()
-app.use(
-  cors({
-    origin: 'https://youtube-simple-clone-fr.vercel.app',
-    credentials: true
-  })
-)
 
 app.use(cookieParser())
 app.use(express.json())
@@ -32,6 +26,9 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     success: false
   })
 }
+app.use('/', express.static(path.join(__dirname, '..', 'public')))
+
+app.use(express.static('public'))
 app.use(errorHandler)
 
 const connect = () => {
@@ -43,10 +40,10 @@ const connect = () => {
     .catch(err => console.log(err))
 }
 
-app.get('/', (req, res) => {
-  console.log('Hi')
-  res.send('Hi')
-})
+// app.get('/', (req, res) => {
+//   console.log('Hi')
+//   res.send('Hi')
+// })
 
 app.listen(process.env.PORT || 3000, () => {
   console.log('Server Started Successfully!')
