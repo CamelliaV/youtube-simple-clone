@@ -57,9 +57,14 @@ export default function SignIn() {
     try {
       console.log('access handleLogin')
 
-      const res = await axios.post('/auth/signin', {
-        name,
-        password
+      const res = await axios.request({
+        url: '/auth/signin',
+        method: 'post',
+        data: {
+          name,
+          password
+        },
+        withCredentials: true,
       })
       dispatch(loginSuccess(res.data))
       // console.log(res.data)
