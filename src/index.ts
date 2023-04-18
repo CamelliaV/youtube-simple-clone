@@ -1,12 +1,14 @@
 import mongoose from 'mongoose'
-import express from 'express'
+import express, { NextFunction } from 'express'
 import { ErrorRequestHandler } from 'express'
 import dotenv from 'dotenv'
 import userRoutes from './routes/users'
 import videoRoutes from './routes/videos'
 import commentRoutes from './routes/comments'
 import authRoutes from './routes/auth'
+import { Request, Response } from 'express'
 import cookieParser from 'cookie-parser'
+import connectHistoryApiFallback from 'connect-history-api-fallback'
 import path from 'path'
 dotenv.config()
 const app = express()
@@ -26,10 +28,14 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     success: false
   })
 }
-app.use('*', express.static(path.join(__dirname, '..', 'public')))
-
-app.use(express.static('public'))
+app.use('/', express.static(path.join(__dirname, '..', 'public')))
+app.use('/', connectHistoryApiFallback())
 app.use(errorHandler)
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.status(404).json({ msg: 'Invalid Route', title: 'Not Found' }).send('Invalid Route')
+  next()
+})
 
 const connect = () => {
   mongoose
@@ -49,5 +55,3 @@ app.listen(process.env.PORT || 3000, () => {
   console.log('Server Started Successfully!')
   connect()
 })
-
-export default app
