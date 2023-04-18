@@ -29,7 +29,8 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 }
 app.use(history())
 app.use(errorHandler)
-app.use('/', express.static(path.join(__dirname, '..', 'public')))
+// app.use('/', express.static(path.join(__dirname, '..', 'public')))
+app.use('/', express.static('public'))
 const connect = () => {
   mongoose
     .connect(process.env.MONGO_DB!)
@@ -40,7 +41,8 @@ const connect = () => {
 }
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'))
+  res.sendFile('index.html')
+  // res.sendFile(path.join(__dirname, '..', 'public', 'index.html'))
 })
 
 // app.use('*',  (req: Request, res: Response) => {
