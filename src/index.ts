@@ -31,6 +31,7 @@ app.use(history())
 app.use(errorHandler)
 // console.log(__dirname)
 app.use('/', express.static(path.join(__dirname, '..', 'public')))
+app.use('/', express.static(path.join(__dirname, '..', 'public', 'assets')))
 const connect = () => {
   mongoose
     .connect(process.env.MONGO_DB!)
