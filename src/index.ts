@@ -28,14 +28,14 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     success: false
   })
 }
-app.use('/', express.static( 'public'))
 app.use('/', connectHistoryApiFallback())
+app.use('/', express.static(path.join(__dirname, '..', 'public')))
 app.use(errorHandler)
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-  res.status(404).json({ msg: 'Invalid Route', title: 'Not Found' }).send('Invalid Route')
-  next()
-})
+// app.use((req: Request, res: Response, next: NextFunction) => {
+//   res.status(404).json({ msg: 'Invalid Route', title: 'Not Found' }).send('Invalid Route')
+//   next()
+// })
 
 const connect = () => {
   mongoose
