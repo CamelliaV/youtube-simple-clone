@@ -28,7 +28,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     success: false
   })
 }
-app.use('/', express.static(path.join(__dirname, '.', 'public')))
+app.get('/', express.static(path.join(__dirname, '.', 'public')))
 app.use(errorHandler)
 
 // app.use((req: Request, res: Response, next: NextFunction) => {
@@ -46,10 +46,10 @@ const connect = () => {
 }
 app.use('/', connectHistoryApiFallback())
 
-app.get('/', (req, res) => {
-  console.log('Hi')
-  res.send('Hi')
-})
+// app.get('/', (req, res) => {
+//   console.log('Hi')
+//   res.send('Hi')
+// })
 
 app.listen(process.env.PORT || 3000, () => {
   console.log('Server Started Successfully!')
