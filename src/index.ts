@@ -29,7 +29,8 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 }
 app.use(history())
 app.use(errorHandler)
-app.use(express.static(path.join(__dirname, '..', 'public')))
+// console.log(__dirname)
+app.use('/', express.static(path.join(__dirname, '..', 'public')))
 // app.use('/', express.static('public'))
 const connect = () => {
   mongoose
