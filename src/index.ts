@@ -46,10 +46,10 @@ const connect = () => {
 }
 app.use('/', connectHistoryApiFallback())
 
-// app.get('/', (req, res) => {
-//   console.log('Hi')
-//   res.send('Hi')
-// })
+app.get('/', (req, res) => {
+  console.log('Hi')
+  res.send('Hi')
+})
 
 app.listen(process.env.PORT || 3000, () => {
   console.log('Server Started Successfully!')
