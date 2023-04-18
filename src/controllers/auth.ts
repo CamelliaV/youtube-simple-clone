@@ -47,7 +47,7 @@ export const signin: RequestHandler = async (
     res
       .cookie('access_token', token, {
         httpOnly: true,
-        domain: '',
+        domain: 'youtube-simple-clone-fr.vercel.app',
         secure: true,
         sameSite: 'none',
         path: '',
@@ -75,12 +75,11 @@ export const google: RequestHandler = async (
     res
       .cookie('access_token', token, {
         httpOnly: true,
-        domain: '',
+        domain: 'youtube-simple-clone-fr.vercel.app',
         secure: true,
         path: '',
         sameSite: 'none',
-        maxAge: 86400000,
-    
+        maxAge: 86400000
       })
       .status(200)
       /// @ts-ignore

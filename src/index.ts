@@ -12,7 +12,7 @@ dotenv.config()
 const app = express()
 app.use(
   cors({
-    origin: '*',
+    origin: 'https://youtube-simple-clone-fr.vercel.app/',
     credentials: true
   })
 )
