@@ -47,7 +47,6 @@ export const signin: RequestHandler = async (
     res
       .cookie('access_token', token, {
         httpOnly: true,
-        domain: 'youtube-simple-clone-fr.vercel.app',
         secure: true,
         sameSite: 'none',
         path: '',
@@ -75,7 +74,6 @@ export const google: RequestHandler = async (
     res
       .cookie('access_token', token, {
         httpOnly: true,
-        domain: 'youtube-simple-clone-fr.vercel.app',
         secure: true,
         path: '',
         sameSite: 'none',
