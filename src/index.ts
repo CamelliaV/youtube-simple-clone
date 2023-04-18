@@ -29,7 +29,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   })
 }
 app.use('/', connectHistoryApiFallback())
-app.use('/', express.static(path.join(__dirname, '..', 'public')))
+app.use('/', express.static(path.join(__dirname, '.', 'public')))
 app.use(errorHandler)
 
 // app.use((req: Request, res: Response, next: NextFunction) => {
