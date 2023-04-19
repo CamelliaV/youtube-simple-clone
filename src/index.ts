@@ -8,9 +8,16 @@ import commentRoutes from './routes/comments'
 import authRoutes from './routes/auth'
 import cookieParser from 'cookie-parser'
 import path from 'path'
+import cors from 'cors'
 import history from 'connect-history-api-fallback'
 dotenv.config()
 const app = express()
+// process.env.MODE &&
+//   app.use(
+//     cors({
+//       origin: '*'
+//     })
+//   )
 
 app.use(cookieParser())
 app.use(express.json())
@@ -51,6 +58,6 @@ app.get('/', (req, res) => {
 // })
 
 app.listen(process.env.PORT || 3000, () => {
-  console.log('Server Started Successfully!')
+  console.log('Server Started Successfully on: ' + process.env.PORT)
   connect()
 })
