@@ -6,7 +6,6 @@
     "start": "node build/index.js",
     "tsc": "tsc"
   },
-  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
