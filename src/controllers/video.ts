@@ -126,7 +126,7 @@ export const sub: RequestHandler = async (
 ) => {
   try {
     /// @ts-ignore
-    const user = await User.findById(req.user.id)
+    const user = await User.findById(req.user.id) 
     if (!user) return next(createError(404, 'User not exist'))
     const subscribedChannels = user.subscribedUsers
     const list = await Promise.all(

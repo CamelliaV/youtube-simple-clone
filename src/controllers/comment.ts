@@ -3,6 +3,7 @@ import { AuthRequest, AuthRequestHandler } from './../types/constants'
 import { NextFunction, Response, Request, RequestHandler } from 'express'
 import Comment from '../models/Comment'
 import Video from '../models/Video'
+
 // export const test: RequestHandler = (req, res) => {
 //   res.send('test working')
 // }

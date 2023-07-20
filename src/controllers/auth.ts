@@ -80,3 +80,20 @@ export const google: RequestHandler = async (
     next(error)
   }
 }
+export const logout: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    res
+      .cookie('access_token', '', {
+        httpOnly: true,
+        expires: new Date(0)
+      })
+      .status(200)
+      .send('log out success')
+  } catch (error) {
+    next(error)
+  }
+}
